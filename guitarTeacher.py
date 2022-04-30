@@ -12,16 +12,20 @@ class guitarMainWindow(QMainWindow):
 		self.mainLayout = QVBoxLayout()
 		self.mainPage.setLayout(self.mainLayout)
 		self.setCentralWidget(self.mainPage)
-
+		#make gui elements
+		self._addToolBar()
 		#start up code
 		self.updateTitle()
-		
+
 	def updateTitle(self):
 		self.setWindowTitle('Guitar Tab Player')
 
 	def _addToolBar(self):
+		self.menuBar = self.menuBar()
+		fileMenu = self.menuBar.addMenu("&File")
 		pass
-
+	def _addPlotter(self):
+		pass
 def main():
 	app = QApplication(sys.argv)
 	window = guitarMainWindow()
