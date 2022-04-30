@@ -3,6 +3,7 @@ import PyQt5
 from PyQt5.QtWidgets import *
 from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
+from guiLab import *
 
 class guitarMainWindow(QMainWindow):
 
@@ -16,6 +17,7 @@ class guitarMainWindow(QMainWindow):
 		self.setCentralWidget(self.mainPage)
 		#make gui elements
 		self._addToolBar()
+		self._addPlotter()
 		#start up code
 		self.updateTitle()
 
@@ -27,10 +29,14 @@ class guitarMainWindow(QMainWindow):
 		fileMenu = self.menuBar.addMenu("&File")
 		pass
 	def _addPlotter(self):
+		self.graphWidget = pg.PlotWidget()
+		self.mainLayout.addWidget(self.graphWidget)
+
 		pass
 def main():
 	app = QApplication(sys.argv)
-	window = guitarMainWindow()
+	# window = guitarMainWindow()
+	window = classPlotter()
 	window.show()
 	sys.exit(app.exec_())
 
