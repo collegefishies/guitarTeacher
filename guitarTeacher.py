@@ -1,6 +1,8 @@
 import sys
 import PyQt5
 from PyQt5.QtWidgets import *
+from pyqtgraph import PlotWidget, plot
+import pyqtgraph as pg
 
 class guitarMainWindow(QMainWindow):
 
