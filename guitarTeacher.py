@@ -35,8 +35,8 @@ class guitarMainWindow(QMainWindow):
 
 	def _addToolBar(self):
 		self.menuBar = self.menuBar()
-		fileMenu = self.menuBar.addMenu("&File")
-		deviceMenu = self.menuBar.addMenu("&Devices")
+		fileMenu = self.menuBar.addMenu("&Open Tab")
+		deviceMenu = self.menuBar.addMenu("&Audio Input")
 		self.devices = sd.query_devices()
 		for device in self.devices:
 			action = QAction(device['name'], self) 
@@ -52,8 +52,8 @@ class guitarMainWindow(QMainWindow):
 def main():
 	app = QApplication(sys.argv)
 	model = guitarModel()
-	# window = guitarMainWindow(model)
-	window = classPlotter()
+	window = guitarMainWindow(model)
+	# window = classPlotter()
 	window.show()
 	sys.exit(app.exec_())
 
