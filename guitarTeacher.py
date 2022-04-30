@@ -1,13 +1,22 @@
 import sys
+from guiLab import *
 import PyQt5
 from PyQt5.QtWidgets import *
-from pyqtgraph import PlotWidget, plot
+import sounddevice as sd
 import pyqtgraph as pg
-from guiLab import *
+from pyqtgraph import PlotWidget, plot
+from functools import partial #controller library
+
+class guitarModel():
+	device = None
+
+	def saveDevice(self, dev):
+		self.device = dev
+		print(dev)
 
 class guitarMainWindow(QMainWindow):
-
-	def __init__(self):
+	def __init__(self, model):
+		self.model = model
 		super(guitarMainWindow,self).__init__()
 		#define primitive widgets
 		self.setGeometry(100,100,400,300)
@@ -19,23 +28,31 @@ class guitarMainWindow(QMainWindow):
 		self._addToolBar()
 		self._addPlotter()
 		#start up code
-		self.updateTitle()
+		self._updateTitle()
 
-	def updateTitle(self):
+	def _updateTitle(self):
 		self.setWindowTitle('Guitar Tab Player')
 
 	def _addToolBar(self):
 		self.menuBar = self.menuBar()
 		fileMenu = self.menuBar.addMenu("&File")
-		pass
+		deviceMenu = self.menuBar.addMenu("&Devices")
+		self.devices = sd.query_devices()
+		for device in self.devices:
+			action = QAction(device['name'], self) 
+			deviceMenu.addAction(
+					action
+				)
+			action.triggered.connect(partial(self.model.saveDevice, device))
+
 	def _addPlotter(self):
 		self.graphWidget = pg.PlotWidget()
 		self.mainLayout.addWidget(self.graphWidget)
 
-		pass
 def main():
 	app = QApplication(sys.argv)
-	# window = guitarMainWindow()
+	model = guitarModel()
+	# window = guitarMainWindow(model)
 	window = classPlotter()
 	window.show()
 	sys.exit(app.exec_())
