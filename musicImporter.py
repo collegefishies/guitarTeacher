@@ -1,5 +1,9 @@
 '''
-	A single class that takes in a guitar tab file and outputs a single format of *unique* note/chord identifiers over time.
+	
+	A single class that takes in a guitar tab file and outputs a single format
+	of *unique* note/chord identifiers, frets, and strings over time.
+
+	MusicXML has the fingering and fretting, so that is the best method of import
 '''
 import os
 import pandas as pd
@@ -33,22 +37,25 @@ def xml_to_list(xml):
 		instrument = part.getInstrument().instrumentName
 
 		for note in part.flat.notes:
-
 			if note.isChord:
 				start = note.offset
 				duration = note.quarterLength
-
-				for chord_note in note.pitches:
+				articulations = note.articulations
+				strings = articulations[0::2]
+				frets = articulations[1::2]
+				for chord_note,string,fret in zip(note.pitches,strings,frets):
 					pitch = chord_note.ps
 					volume = note.volume.realized
-					score.append([start, duration, pitch, volume, instrument])
+					score.append([start, duration, pitch, volume, instrument,string.number, fret.number])
 
 			else:
 				start = note.offset
 				duration = note.quarterLength
 				pitch = note.pitch.ps
 				volume = note.volume.realized
-				score.append([start, duration, pitch, volume, instrument])
+				string = note.articulations[0].number
+				fret = note.articulations[1].number
+				score.append([start, duration, pitch, volume, instrument, string, fret])
 
 	score = sorted(score, key=lambda x: (x[0], x[2]))
 	return score
@@ -84,16 +91,17 @@ class musicImporter():
 			See https://www.audiolabs-erlangen.de/resources/MIR/FMP/C1/C1S2_MusicXML.html
 		'''
 		xml_list = xml_to_list(filename)
-		df = pd.DataFrame(xml_list, columns=['start', 'duration','pitch','velocity','instrument'])
+		# print(xml_list)
+		df = pd.DataFrame(xml_list, columns=['start', 'duration','pitch','velocity','instrument','string','fret'])
 		self.convertedMusic = df
 
 def importMIDI():
 	dont_think_twice = 'music/dont_think_twice/dont_think_twice.mid'
 	mI = musicImporter()
 	mI.importMIDI(dont_think_twice)
-	print(mI.returnMusic())
+	# print(mI.returnMusic())
 def importMusicXML():
-	dont_think_twice = 'music/dont_think_twice/dont_think_twice.xml'
+	dont_think_twice = 'music/dont_think_twice/dont_think_twice.musicxml'
 	mI = musicImporter()
 	mI.importMusicXML(dont_think_twice)
 	print(mI.returnMusic())
