@@ -5,7 +5,6 @@ class Song():
 	beat = 4 #quarter note
 	beats_per_measure = 4
 	ordered_music = None
-	6TP-[*1580-26+3] = 0
 
 	def __init__(self, df):
 		self.df = df
@@ -34,12 +33,13 @@ class Cursor():
 		self.x = x[0]
 		self.y = y[0]
 	def __add__(self, x):
-		self.x += x[0]
-		self.y += x[1]
+		return Cursor(self.x + x[0], self.y + x[1])
 	def __radd__(self,x):
 		return self.__add__(x)
 	def __repr__(self):
 		return f"({self.x}, {self.y})"
+	def __truediv__(self, a):
+		return Cursor(self.x/a, self.y/a)
 class Tablature():
 	def __init__(self,song,y_step=10):
 		self.strings = 6
@@ -49,7 +49,7 @@ class Tablature():
 		self.tabcursor = []
 		for i in range(self.strings, -1, -1):
 			self.tabcursor.append(Cursor(0,i*y_step))
-		pass
+
 
 if __name__ == '__main__':
 	from musicImporter import musicImporter
