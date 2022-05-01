@@ -7,17 +7,19 @@ import pyqtgraph as pg
 from pyqtgraph import PlotWidget, plot
 from functools import partial #controller library
 from musicImporter import musicImporter
-
+from song import Song
 class guitarModel():
 	device = None
 	filename = None
 	music_df = None
+	song = None
 	def openFile(self,filename):
 		if filename:
 			self.filename = filename
 			mi = musicImporter()
 			mi.importMusicXML(filename)
 			self.music_df = mi.returnMusic()
+			self.song = Song(self.music_df)
 	def saveDevice(self, dev):
 		self.device = dev
 
@@ -51,7 +53,6 @@ class guitarMainWindow(QMainWindow):
 		deviceMenu = self.menuBar.addMenu("&Audio Input")
 		self.devices = sd.query_devices()
 		for device in self.devices:
-			print(device)
 			action = QAction(device['name'], self) 
 			deviceMenu.addAction(action)
 			action.triggered.connect(partial(self.model.saveDevice, device))
