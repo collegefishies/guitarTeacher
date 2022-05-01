@@ -35,19 +35,25 @@ class guitarMainWindow(QMainWindow):
 
 	def _addToolBar(self):
 		self.menuBar = self.menuBar()
+		#file menu
 		fileMenu = self.menuBar.addMenu("&Open Tab")
+		action = QAction("Import MusicXML...", self)
+		fileMenu.addAction(action)
+		action.triggered.connect(partial(self.openFile, 'Import MusicXML...', 'MusicXML (*.xml *.musicxml *.mxl);; All Files (*.*)'))
+		#devicesmenu
 		deviceMenu = self.menuBar.addMenu("&Audio Input")
 		self.devices = sd.query_devices()
 		for device in self.devices:
 			action = QAction(device['name'], self) 
-			deviceMenu.addAction(
-					action
-				)
+			deviceMenu.addAction(action)
 			action.triggered.connect(partial(self.model.saveDevice, device))
 
 	def _addPlotter(self):
 		self.graphWidget = pg.PlotWidget()
 		self.mainLayout.addWidget(self.graphWidget)
+	def openFile(self, title, file_ext):
+		filename, _ = QFileDialog.getOpenFileName(self,title,'',file_ext)
+		self.filename = filename
 
 def main():
 	app = QApplication(sys.argv)
