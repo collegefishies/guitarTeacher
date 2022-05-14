@@ -1,4 +1,5 @@
 import svgwrite
+from svgwrite.shapes import Line
 class Song():
 	df = None
 	bpm = None
@@ -40,6 +41,9 @@ class Cursor():
 		return f"({self.x}, {self.y})"
 	def __truediv__(self, a):
 		return Cursor(self.x/a, self.y/a)
+	def __iter__(self):
+		return (self.x, self.y).__iter__()
+
 class Tablature():
 	def __init__(self,song,y_step=10):
 		self.strings = 6
@@ -47,8 +51,25 @@ class Tablature():
 		self.song 	= song
 		self.dwg 	= svgwrite.Drawing('test.svg', profile='full')
 		self.tabcursor = []
+		self.step = Cursor(10,0)
+		print(tuple(Cursor(10,0)))
 		for i in range(self.strings, -1, -1):
 			self.tabcursor.append(Cursor(0,i*y_step))
+	def newCursor(step):
+		newcursor = self.tabcursor
+		for i in range(self.strings + 1):
+			newcursor[i] = self.tabcursor[i] + self.step
+		return newcursor
+
+	def addChord(self, chord_df):
+		#add lines
+		nc = self.newCursor(self.step)
+		oc = self.tabcursor
+		for i in range(1, self.strings + 1):
+			l 
+		l = Line(oc[i],nc[i])
+		pass
+
 
 
 if __name__ == '__main__':
